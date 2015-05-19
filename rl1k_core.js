@@ -82,8 +82,8 @@ var EngineModule = (function () {
         //this.game.input.onDown.add(PointerAction(this), this);
 
         //Check for the bot hitting another object           
-        for (var i=0; i<engine.maps[0].bots.length; ++i)
-            engine.player.body.createBodyCallback(engine.maps[0].bots[i], BlockHit, phaserh);
+        for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
+            engine.player.body.createBodyCallback(engine.maps[engine.curr_map].bots[i], BlockHit, phaserh);
 
         //  And before this will happen, we need to turn on impact events for the world
         phaserh.game.physics.p2.setImpactEvents(true);
