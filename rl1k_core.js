@@ -58,8 +58,8 @@ var EngineModule = (function () {
         phaserh.game.world.setBounds(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
         
         //for (var i=0; i<this.maps.length; ++i)
-        engine.maps[0].Create(phaserh.game);
-        engine.curr_map = 0;
+        engine.curr_map = 0
+        engine.maps[engine.curr_map].Create(phaserh.game);
         
         engine.player.Create(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
