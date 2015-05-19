@@ -65,7 +65,7 @@ var EngineModule = (function () {
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
         engine.player.sprite.frame = 1;
         
-        engine.portal.Create(phaserh.game, 250, 150);
+        engine.portal.Create(phaserh.game, 250, 150, engine.curr_map, 1);
         engine.portal.AddListener(phaserh, engine, engine.player);
         
         // Setup cursors and player
