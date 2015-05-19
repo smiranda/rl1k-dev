@@ -58,14 +58,14 @@ var EngineModule = (function () {
         phaserh.game.world.setBounds(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
         
         //for (var i=0; i<this.maps.length; ++i)
-        engine.maps[0].Create(phaserh.game);
-        engine.curr_map = 0;
+        engine.curr_map = 0
+        engine.maps[engine.curr_map].Create(phaserh.game);
         
         engine.player.Create(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
         engine.player.sprite.frame = 1;
         
-        engine.portal.Create(phaserh.game, 250, 150);
+        engine.portal.Create(phaserh.game, 250, 150, engine.curr_map, 1);
         engine.portal.AddListener(phaserh, engine, engine.player);
         
         // Setup cursors and player
@@ -82,8 +82,8 @@ var EngineModule = (function () {
         //this.game.input.onDown.add(PointerAction(this), this);
 
         //Check for the bot hitting another object           
-        for (var i=0; i<engine.maps[0].bots.length; ++i)
-            engine.player.body.createBodyCallback(engine.maps[0].bots[i], BlockHit, phaserh);
+        for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
+            engine.player.body.createBodyCallback(engine.maps[engine.curr_map].bots[i], BlockHit, phaserh);
 
         //  And before this will happen, we need to turn on impact events for the world
         phaserh.game.physics.p2.setImpactEvents(true);
