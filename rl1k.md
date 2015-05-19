@@ -23,7 +23,7 @@ Exhausted, wounded and disgraced, your mind has a final moment of clarity. You a
  * The main resources you have to manage are your health, your sanity and your age.
 
 ### Health
-The health mechanic will be pretty standard: If you get hit, you loose health. If you drink a potion or rest, you regain health.
+The health mechanic will be pretty standard: If you get hit, you lose health. If you drink a potion or rest, you regain health.
 
 ### Sanity
 Sanity is a measure of your mental well being, and it's a resource you'll have to gamble in order to progress in the game, e.g.:
