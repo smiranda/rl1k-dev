@@ -19,6 +19,8 @@ var PortalModule = (function () {
             for (var i=0; i<engine_ref.maps[engine_ref.curr_map].bots.length; ++i)
                 engine_ref.player.body.createBodyCallback(engine_ref.maps[engine_ref.curr_map].bots[i], player.getHit, lib_ref);
 
+            engine_ref.maps[engine_ref.curr_map].ActivatePortals(lib_ref, engine_ref, player);
+
             this.sprite.destroy();
         }, this);
     };

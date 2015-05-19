@@ -37,7 +37,6 @@ var EngineModule = (function () {
         }
 
         engine.player = BotModule.CreateBot('bot');
-        engine.portal = PortalModule.CreatePortal('portal');
     };
     Engine.prototype.Create = function () {
         var phaserh = this;
@@ -64,9 +63,9 @@ var EngineModule = (function () {
         engine.player.Create(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
         engine.player.sprite.frame = 1;
+         
         
-        engine.portal.Create(phaserh.game, 250, 150, engine.curr_map, 1);
-        engine.portal.AddListener(phaserh, engine, engine.player);
+        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player);
         
         // Setup cursors and player
         cursors = phaserh.game.input.keyboard.createCursorKeys();
