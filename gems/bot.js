@@ -45,6 +45,13 @@ var BotModule = (function () {
     {
       this.body.data.velocity[1] += this.body.world.pxmi(speed);
     };
+    Bot.prototype.getHit = function(body)
+    {
+      body.bot.health -= 10;
+      if (body.bot.health < 0) {
+        body.bot.health = 0;
+      }
+    }
     
     // Brain Class
     var Brain = function(){

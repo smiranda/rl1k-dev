@@ -14,6 +14,11 @@ var PortalModule = (function () {
             engine_ref.maps[this.source_level].Destroy(lib_ref.game);
             engine_ref.maps[this.destination_level].Create(lib_ref.game);
             engine_ref.curr_map = this.destination_level;
+
+            // Check for the bot hitting another object  
+            for (var i=0; i<engine_ref.maps[engine_ref.curr_map].bots.length; ++i)
+                engine_ref.player.body.createBodyCallback(engine_ref.maps[engine_ref.curr_map].bots[i], player.getHit, lib_ref);
+
             this.sprite.destroy();
         }, this);
     };
