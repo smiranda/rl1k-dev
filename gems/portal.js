@@ -19,6 +19,7 @@ var PortalModule = (function () {
             for (var i=0; i<engine_ref.maps[engine_ref.curr_map].bots.length; ++i)
                 engine_ref.player.body.createBodyCallback(engine_ref.maps[engine_ref.curr_map].bots[i], player.getHit, lib_ref);
 
+            lib_ref.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
             engine_ref.maps[engine_ref.curr_map].ActivatePortals(lib_ref, engine_ref, player);
 
             this.sprite.destroy();
