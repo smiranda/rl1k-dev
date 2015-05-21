@@ -33,8 +33,8 @@ var MapModule = (function () {
         this.bot_layer = this.map.createLayer('bots', handler.width, handler.height, handler.maps_group);
         this.layers.push(this.bot_layer);
         
-        for (var i=0; i<this.layers.length; ++i)
-            this.layers[i].resizeWorld();
+        // Resize the Game World to fit the Tiled map (using the bkg layer as a ref)
+        this.layers[0].resizeWorld();
         
         // Setup Collidable wall layer
         var wall_layer = this.layers[2];
