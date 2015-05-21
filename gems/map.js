@@ -18,51 +18,54 @@ var MapModule = (function () {
     
     TiledMap.prototype.Create = function(handler)
     {
-        this.map = handler.add.tilemap(this.map_data_id);
-        this.map.addTilesetImage(this.map_tileset_id); 
-        layers = new Object();
-        layers.bkg = this.map.createLayer('background', handler.width, handler.height, handler.maps_group);
-        layers.gnd = this.map.createLayer('ground', handler.width, handler.height, handler.maps_group);
-        layers.wall = this.map.createLayer('wall', handler.width, handler.height, handler.maps_group); 
+        var map = handler.add.tilemap(this.map_data_id);
+        map.addTilesetImage(this.map_tileset_id); 
+        var layers = new Object();
+        layers.bkg = map.createLayer('background', handler.width, handler.height, handler.maps_group);
+        layers.gnd = map.createLayer('ground', handler.width, handler.height, handler.maps_group);
+        layers.wall = map.createLayer('wall', handler.width, handler.height, handler.maps_group); 
         
         // Resize the Game World to fit the Tiled map (using the bkg layer as a ref)
         layers.bkg.resizeWorld();
         
         // Setup Collidable wall layer
-        this.map.setCollisionBetween(256, 267, true, layers.wall);// colidable tiles
-        handler.physics.p2.convertTilemap(this.map, layers.wall);// this returns the array of bodies, if required
+        map.setCollisionBetween(256, 267, true, layers.wall);// colidable tiles
+        handler.physics.p2.convertTilemap(map, layers.wall);// this returns the array of bodies, if required
         
         // Extract bots positions from Object Layer in the Tiled Map
-        var bot_bodies = this.map.objects.bots;
+        var bot_bodies = map.objects.bots;
         // Create Bots (as many as found in the Object Layer)
-        this.bots = new Array();
+        var bots = new Array();
         for (var i=0; i<bot_bodies.length; ++i)
-            this.bots.push(BotModule.CreateBot('bot'));
+            bots.push(BotModule.CreateBot('bot'));
         
         // Setup bots
         var bot_brain = BotModule.CreateBrain();
         for (var i=0; i<bot_bodies.length; ++i){
             //this.bots[i].Create(handler, this.bot_bodies[i].x, this.bot_bodies[i].y);
-            this.bots[i].Create(handler, bot_bodies[i].x, bot_bodies[i].y);
-            this.bots[i].PlugBrain(bot_brain);
+            bots[i].Create(handler, bot_bodies[i].x, bot_bodies[i].y);
+            bots[i].PlugBrain(bot_brain);
         }    
         
         // Extract portal positions
-        var portal_bodies = this.map.objects.markers;
+        var portal_bodies = map.objects.markers;
         // Create portals
         // NOTE: the information regarding the destination and the source of the portals
         // was hardcoded in the custom properties of the object in the Tiled Map
-        this.portals = new Array();
+        var portals = new Array();
         for (var i=0; i<portal_bodies.length; ++i){
             var portal = PortalModule.CreatePortal('portal');
             portal.Create(handler, portal_bodies[i].x, portal_bodies[i].y,
                             portal_bodies[i].properties.portal_src,
                             portal_bodies[i].properties.portal_dst);
-            this.portals.push(portal);
+            portals.push(portal);
         }
         
         // Store information in the object
         this.layers = layers;
+        this.map = map;
+        this.portals = portals;
+        this.bots = bots;
     };
     
     TiledMap.prototype.Destroy = function () {
