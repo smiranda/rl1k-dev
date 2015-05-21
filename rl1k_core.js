@@ -28,6 +28,7 @@ var EngineModule = (function () {
         phaserh.game.load.image('background', './gfx/space.png');
         phaserh.game.load.spritesheet('bot', './gfx/square.png', 16, 16);
         phaserh.game.load.spritesheet('portal', './gfx/portal.png', 16, 16);
+        phaserh.game.load.spritesheet('ui_box', './gfx/ui_box.png', 145, 55);
         
         engine.maps = new Array();
         for (var i=0; i<2; ++i) {
@@ -37,6 +38,9 @@ var EngineModule = (function () {
         }
 
         engine.player = BotModule.CreateBot('bot');
+        
+        engine.ui = UIModule.CreateUIModule(phaserh, engine);
+        
     };
     Engine.prototype.Create = function () {
         var phaserh = this;
@@ -87,6 +91,10 @@ var EngineModule = (function () {
         //  And before this will happen, we need to turn on impact events for the world
         phaserh.game.physics.p2.setImpactEvents(true);
 
+        
+        // Create UI
+        engine.ui.Create();
+        
         // Other Initializations
         phaserh.game.camera.follow(engine.player.sprite);
         phaserh.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
@@ -102,6 +110,8 @@ var EngineModule = (function () {
     };
     Engine.prototype.Render = function () {
         var phaserh = this;
+        
+        engine.ui
         
         //this.game.debug.cameraInfo(this.game.camera, 32, 32);
         phaserh.game.debug.text("Health: " + engine.player.health, 32, 128);
