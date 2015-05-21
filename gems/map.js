@@ -20,50 +20,49 @@ var MapModule = (function () {
     {
         this.map = handler.add.tilemap(this.map_data_id);
         this.map.addTilesetImage(this.map_tileset_id); 
-        this.layers = new Object();
-        this.layers.bkg = this.map.createLayer('background', handler.width, handler.height, handler.maps_group);
-        this.layers.gnd = this.map.createLayer('ground', handler.width, handler.height, handler.maps_group);
-        this.layers.wall = this.map.createLayer('wall', handler.width, handler.height, handler.maps_group); 
-        
-        // Create a special markers layer (for holding portals and other special map markers)
-        this.layers.markers = this.map.createLayer('markers', handler.width, handler.height, handler.maps_group);
-        
-        // Create a special bot layer
-        this.layers.bots = this.map.createLayer('bots', handler.width, handler.height, handler.maps_group);
+        layers = new Object();
+        layers.bkg = this.map.createLayer('background', handler.width, handler.height, handler.maps_group);
+        layers.gnd = this.map.createLayer('ground', handler.width, handler.height, handler.maps_group);
+        layers.wall = this.map.createLayer('wall', handler.width, handler.height, handler.maps_group); 
         
         // Resize the Game World to fit the Tiled map (using the bkg layer as a ref)
-        this.layers.bkg.resizeWorld();
+        layers.bkg.resizeWorld();
         
         // Setup Collidable wall layer
-        var wall_layer = this.layers.wall;
-        this.map.setCollisionBetween(256, 267, true, wall_layer);// colidable tiles
-        handler.physics.p2.convertTilemap(this.map, wall_layer);// this returns the array of bodies, if required
+        this.map.setCollisionBetween(256, 267, true, layers.wall);// colidable tiles
+        handler.physics.p2.convertTilemap(this.map, layers.wall);// this returns the array of bodies, if required
         
-        // Create bots from map data 
-        this.map.setCollisionBetween(126, 127, true, this.layers.bots);// colidable tiles
-        this.bot_bodies = handler.physics.p2.convertTilemap(this.map, this.layers.bots);
+        // Extract bots positions from Object Layer in the Tiled Map
+        var bot_bodies = this.map.objects.bots;
+        // Create Bots (as many as found in the Object Layer)
         this.bots = new Array();
-        for (var i=0; i<this.bot_bodies.length; ++i)
+        for (var i=0; i<bot_bodies.length; ++i)
             this.bots.push(BotModule.CreateBot('bot'));
         
         // Setup bots
         var bot_brain = BotModule.CreateBrain();
-        for (var i=0; i<this.bot_bodies.length; ++i){
-            this.bots[i].Create(handler, this.bot_bodies[i].x, this.bot_bodies[i].y);
+        for (var i=0; i<bot_bodies.length; ++i){
+            //this.bots[i].Create(handler, this.bot_bodies[i].x, this.bot_bodies[i].y);
+            this.bots[i].Create(handler, bot_bodies[i].x, bot_bodies[i].y);
             this.bots[i].PlugBrain(bot_brain);
         }    
-                
-        // Create portals from map data XXX: !DRY, check bot creation
-        this.map.setCollisionBetween(221, 222, true, this.layers.markers);// colidable tiles
-        this.portal_bodies = handler.physics.p2.convertTilemap(this.map, this.layers.markers);
+        
+        // Extract portal positions
+        var portal_bodies = this.map.objects.markers;
+        // Create portals
+        // NOTE: the information regarding the destination and the source of the portals
+        // was hardcoded in the custom properties of the object in the Tiled Map
         this.portals = new Array();
-        for (var i=0; i<this.portal_bodies.length; ++i){
+        for (var i=0; i<portal_bodies.length; ++i){
             var portal = PortalModule.CreatePortal('portal');
-            portal.Create(handler, this.portal_bodies[i].x, this.portal_bodies[i].y,
-                            this.layers.markers.layer.properties.portal_0_src,
-                            this.layers.markers.layer.properties.portal_0_dst); // XXX: find portal index from x,y properties
+            portal.Create(handler, portal_bodies[i].x, portal_bodies[i].y,
+                            portal_bodies[i].properties.portal_src,
+                            portal_bodies[i].properties.portal_dst);
             this.portals.push(portal);
         }
+        
+        // Store information in the object
+        this.layers = layers;
     };
     
     TiledMap.prototype.Destroy = function () {
