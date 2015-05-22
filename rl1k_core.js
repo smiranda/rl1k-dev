@@ -101,12 +101,39 @@ var EngineModule = (function () {
         phaserh.game.scale.pageAlignHorizontally = true;
         phaserh.game.scale.pageAlignVeritcally = true;
         phaserh.game.scale.refresh();
+
+        // light bitmap
+        phaserh.bitmap = phaserh.game.add.bitmapData(WORLD_BOUND_X, WORLD_BOUND_Y);
+        var lightBitmap = phaserh.game.add.image(0, 0, phaserh.bitmap);
+        lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
     };
     Engine.prototype.Update = function () {      
-        
+        var phaserh = this;
+        var wall_layer = engine.maps[engine.curr_map].layers.wall;
+
+        // fill the entire light bitmap with a dark shadow color.
+        phaserh.bitmap.context.fillStyle = 'rgb(100, 100, 100)';
+        phaserh.bitmap.context.fillRect(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
+
         engine.player.Update();
         for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
             engine.maps[engine.curr_map].bots[i].Update();
+
+        if (engine.player.body.velocity.x != 0 || engine.player.body.velocity.y != 0 || engine.player.view_points.length == 0)
+        {
+            engine.player.updateVision(wall_layer);
+        }
+
+        // draw light around player
+        phaserh.bitmap.context.beginPath();
+        phaserh.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
+        phaserh.bitmap.context.moveTo(engine.player.view_points[0].x, engine.player.view_points[0].y);
+        for(var i = 0; i < engine.player.view_points.length; i++) {
+            phaserh.bitmap.context.lineTo(engine.player.view_points[i].x, engine.player.view_points[i].y);
+        }
+        phaserh.bitmap.context.closePath();
+        phaserh.bitmap.context.fill();
+        phaserh.bitmap.dirty = true;
     };
     Engine.prototype.Render = function () {
         var phaserh = this;
