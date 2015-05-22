@@ -10,6 +10,8 @@ var BotModule = (function () {
         this.sprite_sheet_id = _sprite_sheet_id;
         this.dir = 0;
         this.external_move = false;
+        this.viewing_range = 100;
+        this.view_points = [];
     };
     Bot.prototype.Create = function(handler, _x, _y)
     {
@@ -52,6 +54,35 @@ var BotModule = (function () {
         body.bot.health = 0;
       }
     }
+    Bot.prototype.updateVision = function(layer)
+    {
+        this.view_points = [];
+        for(var a = 0; a < Math.PI * 2; a += Math.PI/90) {
+            // Create a ray from the light to a point on the circle
+            var ray = new Phaser.Line(this.body.x, this.body.y, this.body.x + Math.cos(a) * this.viewing_range, 
+                this.body.y + Math.sin(a) * this.viewing_range);
+            this.view_points.push(getRayCastPoints(layer, ray));
+        }
+    }
+
+    var getRayCastPoints = function (layer, ray) {
+        var tiles = layer.getTiles(ray.x, ray.y, ray.width, ray.height, false, false);
+        if (tiles.length !== 0)
+        {
+            var coords = ray.coordinatesOnLine(4);
+            for (var t = 0; t < coords.length; t++)
+            {
+                for (var i = 0; i < tiles.length; i++)
+                {
+                    if (tiles[i].collides && tiles[i].containsPoint(coords[t][0], coords[t][1]))
+                    {
+                        return {x:coords[t][0],y:coords[t][1]};
+                    }
+                }
+            }
+        }
+        return {x:ray.end.x,y:ray.end.y};
+    };
     
     // Brain Class
     var Brain = function(){
