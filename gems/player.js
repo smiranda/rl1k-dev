@@ -13,6 +13,8 @@ var PlayerModule = (function () {
         this.viewing_range = 100;
         this.view_points = [];
     };
+    Player.inheritsFrom(Character);
+    
     Player.prototype.Place = function(handler, _x, _y)
     {
         // Capure handler
@@ -30,23 +32,6 @@ var PlayerModule = (function () {
         this.body.player = this;
     };
     
-    Player.prototype.Update = function()
-    {
-       if (this.brain !== undefined)
-           this.brain.Think(this);
-    };
-    Player.prototype.PlugBrain = function(_brain)
-    {
-        this.brain = _brain;
-    };
-    Player.prototype.AddVelocityX = function(speed)
-    {
-      this.body.data.velocity[0] += this.body.world.pxmi(speed);
-    };
-    Player.prototype.AddVelocityY = function(speed)
-    {
-      this.body.data.velocity[1] += this.body.world.pxmi(speed);
-    };
     Player.prototype.getHit = function(body)
     {
       body.player.health -= 10;
@@ -88,6 +73,9 @@ var PlayerModule = (function () {
     var PlayerBrain = function(_cursor_keys){
         this.cursor_keys = _cursor_keys;
     };
+    
+    PlayerBrain.inheritsFrom(Brain);
+    
     PlayerBrain.prototype.Think = function(subject)
     {
         subject.body.setZeroVelocity();
