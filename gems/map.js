@@ -8,6 +8,9 @@ var MapModule = (function () {
         this.map_id = _map_id;
         this.map_tileset_id = _tiles_id;
         this.map_data_id = _map_id + "data";
+        this.bots = new Array();
+        this.portals = new Array();
+        this.init_positions = [];
     };
     
     TiledMap.prototype.Preload = function(handler, data_path, tileset_path)
@@ -34,18 +37,6 @@ var MapModule = (function () {
         
         // Extract bots positions from Object Layer in the Tiled Map
         var bot_bodies = map.objects.bots;
-        // Create Bots (as many as found in the Object Layer)
-        var bots = new Array();
-        for (var i=0; i<bot_bodies.length; ++i)
-            bots.push(BotModule.CreateBot('bot'));
-        
-        // Setup bots
-        var bot_brain = BotModule.CreateBrain();
-        for (var i=0; i<bot_bodies.length; ++i){
-            //this.bots[i].Create(handler, this.bot_bodies[i].x, this.bot_bodies[i].y);
-            bots[i].Place(handler, bot_bodies[i].x, bot_bodies[i].y);
-            bots[i].PlugBrain(bot_brain);
-        }    
         
         // Extract portal positions
         var portal_bodies = map.objects.markers;
@@ -65,7 +56,7 @@ var MapModule = (function () {
         this.layers = layers;
         this.map = map;
         this.portals = portals;
-        this.bots = bots;
+        this.init_positions.bot = bot_bodies;
     };
     
     TiledMap.prototype.Destroy = function () {
@@ -78,6 +69,7 @@ var MapModule = (function () {
             //this.bots[i].sprite = null;
             //this.bots[i] = null;
         }
+        this.bots = [];
         
         // Destroy layers
         var wall_layer = this.layers.wall;
@@ -85,6 +77,24 @@ var MapModule = (function () {
         for (var layerToDestroy in this.layers)
             this.layers[layerToDestroy].destroy();
     };
+    
+    TiledMap.prototype.CreateBots = function () {
+        for (var i=0; i<this.init_positions.bot.length; ++i)
+            this.bots.push(BotModule.CreateBot('bot'));
+    }
+    
+    TiledMap.prototype.PlaceBots = function (handler) {
+        for (var i = 0; i < this.bots.length; ++i){
+            this.bots[i].init_pos = this.init_positions.bot[i];
+            this.bots[i].Place(handler, this.bots[i].init_pos.x, this.bots[i].init_pos.y);
+        }
+    }
+    
+    TiledMap.prototype.SetupBrainBots = function () {
+        var bot_brain = BotModule.CreateBrain();
+        for (var i = 0; i < this.bots.length; ++i)
+            this.bots[i].PlugBrain(bot_brain);
+    }
     
     TiledMap.prototype.ActivatePortals = function (handler, engine_ref, player_ref) {
         for (var i = 0; i < this.portals.length; ++i)

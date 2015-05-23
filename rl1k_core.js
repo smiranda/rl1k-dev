@@ -59,6 +59,10 @@ var EngineModule = (function () {
         // Setup initial map
         engine.curr_map = 0
         engine.maps[engine.curr_map].Create(phaserh.game);
+        // Setup the bots in the map
+        engine.maps[engine.curr_map].CreateBots();    
+        engine.maps[engine.curr_map].PlaceBots(phaserh.game);  
+        engine.maps[engine.curr_map].SetupBrainBots(); 
         
         // Setup player
         engine.player = BotModule.CreateBot('bot');
@@ -66,13 +70,7 @@ var EngineModule = (function () {
         engine.player.Place(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
         engine.player.sprite.frame = 1;
-        // Plug player's brain
-        var player_brain = BotModule.CreatePlayerBrain(engine.cursor_keys);
-        engine.player.PlugBrain(player_brain);         
-        
-        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player);
-        
-        // Setup cursors
+        // Setup player cursors
         cursors = phaserh.game.input.keyboard.createCursorKeys();
         engine.cursor_keys = {
             up: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -80,6 +78,12 @@ var EngineModule = (function () {
             left: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.A),
             right: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
+        // Plug player's brain
+        var player_brain = BotModule.CreatePlayerBrain(engine.cursor_keys);
+        engine.player.PlugBrain(player_brain);         
+        
+        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player);
+        
         
         //this.game.input.onDown.add(PointerAction(this), this);
 
