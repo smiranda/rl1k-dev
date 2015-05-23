@@ -10,23 +10,31 @@ var PortalModule = (function () {
 
     Portal.prototype.AddListener = function(lib_ref, engine_ref, player)
     {
+        var src_map = engine_ref.maps[this.source_level];
+        var dst_map = engine_ref.maps[this.destination_level];
         this.body.createBodyCallback(player, function(body1, body2) {
-            engine_ref.maps[this.source_level].Destroy(lib_ref.game);
-            engine_ref.maps[this.destination_level].Create(lib_ref.game);
-            engine_ref.curr_map = this.destination_level;
+            src_map.Destroy(lib_ref.game);
+            dst_map.Create(lib_ref.game);
+            dst_map.CreateBots();    
+            dst_map.PlaceBots(lib_ref.game);  
+            dst_map.SetupBrainBots(); 
+            dst_map.CreatePortals();
+            dst_map.PlacePortals(lib_ref.game);
+            dst_map.ActivatePortals(lib_ref, engine_ref, player);
 
             // Check for the bot hitting another object  
             for (var i=0; i<engine_ref.maps[engine_ref.curr_map].bots.length; ++i)
-                engine_ref.player.body.createBodyCallback(engine_ref.maps[engine_ref.curr_map].bots[i], player.getHit, lib_ref);
+                engine_ref.player.body.createBodyCallback(dst_map.bots[i], player.getHit, lib_ref);
 
             lib_ref.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-            engine_ref.maps[engine_ref.curr_map].ActivatePortals(lib_ref, engine_ref, player);
+
+            engine_ref.curr_map = this.destination_level;
 
             this.sprite.destroy();
         }, this);
     };
     
-    Portal.prototype.Create = function(handler, _x, _y, source, destination)
+    Portal.prototype.Place = function(handler, _x, _y, source, destination)
     {
         // Capure handler
         this.handler_ref = handler; 

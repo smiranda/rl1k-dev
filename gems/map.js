@@ -5,9 +5,12 @@ var MapModule = (function () {
     
     // Module classes
     var TiledMap = function(_map_id, _tiles_id){
-        this.map_id = _map_id;
-        this.map_tileset_id = _tiles_id;
+        this.map_id = _map_id;                  // Map Id
+        this.map_tileset_id = _tiles_id;        
         this.map_data_id = _map_id + "data";
+        this.bots = new Array();                // Stores the Bot objects
+        this.portals = new Array();             // Stores the Portal objects
+        this.init_positions = [];
     };
     
     TiledMap.prototype.Preload = function(handler, data_path, tileset_path)
@@ -34,38 +37,15 @@ var MapModule = (function () {
         
         // Extract bots positions from Object Layer in the Tiled Map
         var bot_bodies = map.objects.bots;
-        // Create Bots (as many as found in the Object Layer)
-        var bots = new Array();
-        for (var i=0; i<bot_bodies.length; ++i)
-            bots.push(BotModule.CreateBot('bot'));
-        
-        // Setup bots
-        var bot_brain = BotModule.CreateBrain();
-        for (var i=0; i<bot_bodies.length; ++i){
-            //this.bots[i].Create(handler, this.bot_bodies[i].x, this.bot_bodies[i].y);
-            bots[i].Create(handler, bot_bodies[i].x, bot_bodies[i].y);
-            bots[i].PlugBrain(bot_brain);
-        }    
         
         // Extract portal positions
         var portal_bodies = map.objects.markers;
-        // Create portals
-        // NOTE: the information regarding the destination and the source of the portals
-        // was hardcoded in the custom properties of the object in the Tiled Map
-        var portals = new Array();
-        for (var i=0; i<portal_bodies.length; ++i){
-            var portal = PortalModule.CreatePortal('portal');
-            portal.Create(handler, portal_bodies[i].x, portal_bodies[i].y,
-                            portal_bodies[i].properties.portal_src,
-                            portal_bodies[i].properties.portal_dst);
-            portals.push(portal);
-        }
-        
+
         // Store information in the object
         this.layers = layers;
         this.map = map;
-        this.portals = portals;
-        this.bots = bots;
+        this.init_positions.bot = bot_bodies;
+        this.init_positions.portal = portal_bodies;
     };
     
     TiledMap.prototype.Destroy = function () {
@@ -78,6 +58,13 @@ var MapModule = (function () {
             //this.bots[i].sprite = null;
             //this.bots[i] = null;
         }
+        this.bots = [];
+        
+        // Destroy portals
+        for (var i=0; i<this.portals.length; ++i){
+            this.portals[i].sprite.destroy();
+        }
+        this.portals = [];
         
         // Destroy layers
         var wall_layer = this.layers.wall;
@@ -85,6 +72,44 @@ var MapModule = (function () {
         for (var layerToDestroy in this.layers)
             this.layers[layerToDestroy].destroy();
     };
+    
+    
+    TiledMap.prototype.CreateBots = function () {
+        for (var i=0; i<this.init_positions.bot.length; ++i)
+            this.bots.push(BotModule.CreateBot('bot'));
+    }
+    
+    TiledMap.prototype.PlaceBots = function (handler) {
+        for (var i = 0; i < this.bots.length; ++i){
+            this.bots[i].init_pos = this.init_positions.bot[i];
+            this.bots[i].Place(handler, this.bots[i].init_pos.x, this.bots[i].init_pos.y);
+        }
+    }
+    
+    TiledMap.prototype.SetupBrainBots = function () {
+        var bot_brain = BotModule.CreateBrain();
+        for (var i = 0; i < this.bots.length; ++i)
+            this.bots[i].PlugBrain(bot_brain);
+    }
+    
+    TiledMap.prototype.CreatePortals = function () {
+        // Create portals
+        for (var i=0; i<this.init_positions.portal.length; ++i){
+            var portal = PortalModule.CreatePortal('portal');
+            this.portals.push(portal);
+        }        
+    }
+    
+    TiledMap.prototype.PlacePortals = function (handler) {
+        // NOTE: the information regarding the destination and the source of the portals
+        // was hardcoded in the custom properties of the object in the Tiled Map
+        for (var i=0; i<this.portals.length; ++i){
+            this.portals[i].init_pos = this.init_positions.portal[i];
+            this.portals[i].Place(handler, this.portals[i].init_pos.x, this.portals[i].init_pos.y,
+                            this.portals[i].init_pos.properties.portal_src,
+                            this.portals[i].init_pos.properties.portal_dst);
+        }
+    }
     
     TiledMap.prototype.ActivatePortals = function (handler, engine_ref, player_ref) {
         for (var i = 0; i < this.portals.length; ++i)

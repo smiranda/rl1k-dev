@@ -36,12 +36,10 @@ var EngineModule = (function () {
             engine.maps[i].Preload(
                 phaserh.game,'./resources/map'+i+'.json','./gfx/world.png');
         }
-
-        engine.player = BotModule.CreateBot('bot');
-        
-        engine.ui = UIModule.CreateUIModule(phaserh, engine);
         
     };
+    
+    
     Engine.prototype.Create = function () {
         var phaserh = this;
 
@@ -60,18 +58,21 @@ var EngineModule = (function () {
         //this.game.add.tileSprite(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y, 'background'); 
         phaserh.game.world.setBounds(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
         
-        //for (var i=0; i<this.maps.length; ++i)
+        // Setup initial map
         engine.curr_map = 0
         engine.maps[engine.curr_map].Create(phaserh.game);
+        // Setup the bots in the map
+        engine.maps[engine.curr_map].CreateBots();    
+        engine.maps[engine.curr_map].PlaceBots(phaserh.game);  
+        engine.maps[engine.curr_map].SetupBrainBots(); 
         
-        engine.player.Create(
+        // Setup player
+        engine.player = BotModule.CreateBot('bot');
+        // Place player in the map
+        engine.player.Place(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
         engine.player.sprite.frame = 1;
-         
-        
-        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player);
-        
-        // Setup cursors and player
+        // Setup player cursors
         cursors = phaserh.game.input.keyboard.createCursorKeys();
         engine.cursor_keys = {
             up: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -79,8 +80,16 @@ var EngineModule = (function () {
             left: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.A),
             right: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
+        // Plug player's brain
         var player_brain = BotModule.CreatePlayerBrain(engine.cursor_keys);
-        engine.player.PlugBrain(player_brain);
+        engine.player.PlugBrain(player_brain); 
+        
+        // Setup the portals in the map
+        engine.maps[engine.curr_map].CreatePortals(); 
+        engine.maps[engine.curr_map].PlacePortals(phaserh.game); 
+        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player); // player needs to be created before activating the portals
+        
+        
         
         //this.game.input.onDown.add(PointerAction(this), this);
 
@@ -92,7 +101,8 @@ var EngineModule = (function () {
         phaserh.game.physics.p2.setImpactEvents(true);
 
         
-        // Create UI
+        // Setup UI
+        engine.ui = UIModule.CreateUIModule(phaserh, engine);
         engine.ui.Create();
         
         // Other Initializations
