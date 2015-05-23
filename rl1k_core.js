@@ -38,6 +38,8 @@ var EngineModule = (function () {
         }
         
     };
+    
+    
     Engine.prototype.Create = function () {
         var phaserh = this;
 
@@ -80,9 +82,13 @@ var EngineModule = (function () {
         };
         // Plug player's brain
         var player_brain = BotModule.CreatePlayerBrain(engine.cursor_keys);
-        engine.player.PlugBrain(player_brain);         
+        engine.player.PlugBrain(player_brain); 
         
-        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player);
+        // Setup the portals in the map
+        engine.maps[engine.curr_map].CreatePortals(); 
+        engine.maps[engine.curr_map].PlacePortals(phaserh.game); 
+        engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player); // player needs to be created before activating the portals
+        
         
         
         //this.game.input.onDown.add(PointerAction(this), this);
