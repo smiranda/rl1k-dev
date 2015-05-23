@@ -43,7 +43,7 @@ var MapModule = (function () {
         var bot_brain = BotModule.CreateBrain();
         for (var i=0; i<bot_bodies.length; ++i){
             //this.bots[i].Create(handler, this.bot_bodies[i].x, this.bot_bodies[i].y);
-            bots[i].Create(handler, bot_bodies[i].x, bot_bodies[i].y);
+            bots[i].Place(handler, bot_bodies[i].x, bot_bodies[i].y);
             bots[i].PlugBrain(bot_brain);
         }    
         
@@ -55,7 +55,7 @@ var MapModule = (function () {
         var portals = new Array();
         for (var i=0; i<portal_bodies.length; ++i){
             var portal = PortalModule.CreatePortal('portal');
-            portal.Create(handler, portal_bodies[i].x, portal_bodies[i].y,
+            portal.Place(handler, portal_bodies[i].x, portal_bodies[i].y,
                             portal_bodies[i].properties.portal_src,
                             portal_bodies[i].properties.portal_dst);
             portals.push(portal);

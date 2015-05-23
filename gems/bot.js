@@ -13,7 +13,7 @@ var BotModule = (function () {
         this.viewing_range = 100;
         this.view_points = [];
     };
-    Bot.prototype.Create = function(handler, _x, _y)
+    Bot.prototype.Place = function(handler, _x, _y)
     {
         // Capure handler
         this.handler_ref = handler; 

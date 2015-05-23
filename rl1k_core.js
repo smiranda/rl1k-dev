@@ -64,7 +64,7 @@ var EngineModule = (function () {
         engine.curr_map = 0
         engine.maps[engine.curr_map].Create(phaserh.game);
         
-        engine.player.Create(
+        engine.player.Place(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
         engine.player.sprite.frame = 1;
          

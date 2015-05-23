@@ -26,7 +26,7 @@ var PortalModule = (function () {
         }, this);
     };
     
-    Portal.prototype.Create = function(handler, _x, _y, source, destination)
+    Portal.prototype.Place = function(handler, _x, _y, source, destination)
     {
         // Capure handler
         this.handler_ref = handler; 
