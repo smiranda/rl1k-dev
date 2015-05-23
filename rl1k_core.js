@@ -29,6 +29,7 @@ var EngineModule = (function () {
         phaserh.game.load.spritesheet('bot', './gfx/square.png', 16, 16);
         phaserh.game.load.spritesheet('portal', './gfx/portal.png', 16, 16);
         phaserh.game.load.spritesheet('ui_box', './gfx/ui_box.png', 145, 55);
+        phaserh.game.load.spritesheet('player', './gfx/square.png', 16, 16);
         
         engine.maps = new Array();
         for (var i=0; i<2; ++i) {
@@ -119,6 +120,8 @@ var EngineModule = (function () {
         var lightBitmap = phaserh.game.add.image(0, 0, phaserh.bitmap);
         lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
     };
+    
+    
     Engine.prototype.Update = function () {      
         var phaserh = this;
         var wall_layer = engine.maps[engine.curr_map].layers.wall;
@@ -147,6 +150,8 @@ var EngineModule = (function () {
         phaserh.bitmap.context.fill();
         phaserh.bitmap.dirty = true;
     };
+    
+    
     Engine.prototype.Render = function () {
         var phaserh = this;
         
@@ -157,6 +162,8 @@ var EngineModule = (function () {
         //this.game.debug.spriteCoords(this.player.sprite, 32, 160);
         phaserh.game.scale.refresh();
     };
+    
+    
     Engine.prototype.Init = function (win_w, win_h, dom_tag) {
         this.game = new Phaser.Game(
             win_w, win_h, Phaser.CANVAS, dom_tag,
