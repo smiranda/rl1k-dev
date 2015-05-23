@@ -46,13 +46,15 @@ var EngineModule = (function () {
         // Setup physics
         phaserh.game.physics.startSystem(Phaser.Physics.P2JS);
 
-        engine.draw_group = phaserh.game.add.group();
-        engine.maps_group = phaserh.game.add.group(engine.draw_group);
-        engine.bots_group = phaserh.game.add.group(engine.draw_group);
-
-        phaserh.game.draw_group = engine.draw_group;
-        phaserh.game.bots_group = engine.bots_group;
-        phaserh.game.maps_group = engine.maps_group;
+        engine.draw_group    = phaserh.game.add.group();
+        engine.maps_group    = phaserh.game.add.group(engine.draw_group);
+        engine.bots_group    = phaserh.game.add.group(engine.draw_group);
+        engine.players_group = phaserh.game.add.group(engine.draw_group);
+        
+        phaserh.game.draw_group     = engine.draw_group;
+        phaserh.game.bots_group     = engine.bots_group;
+        phaserh.game.maps_group     = engine.maps_group;
+        phaserh.game.players_group  = engine.players_group;
         
         // Setup world
         //this.game.add.tileSprite(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y, 'background'); 
@@ -67,7 +69,7 @@ var EngineModule = (function () {
         engine.maps[engine.curr_map].SetupBrainBots(); 
         
         // Setup player
-        engine.player = BotModule.CreateBot('bot');
+        engine.player = PlayerModule.CreatePlayer('player');
         // Place player in the map
         engine.player.Place(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
