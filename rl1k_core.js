@@ -83,7 +83,7 @@ var EngineModule = (function () {
             right: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
         // Plug player's brain
-        var player_brain = BotModule.CreatePlayerBrain(engine.cursor_keys);
+        var player_brain = PlayerModule.CreatePlayerBrain(engine.cursor_keys);
         engine.player.PlugBrain(player_brain); 
         
         // Setup the portals in the map
