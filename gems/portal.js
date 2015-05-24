@@ -52,9 +52,10 @@ var PortalModule = (function () {
         // Add the sprite object
         // If no new coordinates are provided, the portal is placed according to its original position (loaded from the .json)
         if (_x == undefined || _y == undefined){
-            this.sprite = handler.add.sprite(this.init_pos.x, this.init_pos.y, this.portal_id);
+            console.log(this.portal_id)
+            this.sprite = handler.markers_group.create(this.init_pos.x, this.init_pos.y, this.portal_id);
         } else {
-            this.sprite = handler.add.sprite(_x, _y, this.portal_id);
+            this.sprite = handler.markers_group.create(_x, _y, this.portal_id);
         }
         handler.physics.p2.enable(this.sprite);
         this.sprite.body.setZeroDamping();
