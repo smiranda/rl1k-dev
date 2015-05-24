@@ -8,9 +8,14 @@ var MapModule = (function () {
         this.map_id = _map_id;                  // Map Id
         this.map_tileset_id = _tiles_id;        
         this.map_data_id = _map_id + "data";
+        
+        this.map = [];                          // Tile map from .json
+        this.layers = [];                       // Tile layers (background, walls,...) loaded from .json
+        this.init_info = [];                    // Set of properties loaded from .json
+        
         this.bots = new Array();                // Stores the Bot objects
         this.portals = new Array();             // Stores the Portal objects
-        this.init_positions = [];
+        
     };
     
     TiledMap.prototype.Preload = function(handler, data_path, tileset_path)
@@ -35,17 +40,17 @@ var MapModule = (function () {
         map.setCollisionBetween(256, 267, true, layers.wall);// colidable tiles
         handler.physics.p2.convertTilemap(map, layers.wall);// this returns the array of bodies, if required
         
-        // Extract bots positions from Object Layer in the Tiled Map
+        // Extract bots' positions from Object Layer in the Tiled Map
         var bot_bodies = map.objects.bots;
-        
+
         // Extract portal positions
         var portal_bodies = map.objects.markers;
 
         // Store information in the object
         this.layers = layers;
         this.map = map;
-        this.init_positions.bot = bot_bodies;
-        this.init_positions.portal = portal_bodies;
+        this.init_info.bot = bot_bodies;
+        this.init_info.portal = portal_bodies;
     };
     
     TiledMap.prototype.Destroy = function () {
@@ -75,27 +80,26 @@ var MapModule = (function () {
     
     
     TiledMap.prototype.CreateBots = function () {
-        for (var i=0; i<this.init_positions.bot.length; ++i)
-            this.bots.push(BotModule.CreateBot('bot'));
+        for (var i=0; i<this.init_info.bot.length; ++i)
+            this.bots.push(BotModule.CreateBot('bot', this.init_info.bot[i]));
     }
     
     TiledMap.prototype.PlaceBots = function (handler) {
         for (var i = 0; i < this.bots.length; ++i){
-            this.bots[i].init_pos = this.init_positions.bot[i];
-            this.bots[i].Place(handler, this.bots[i].init_pos.x, this.bots[i].init_pos.y);
+            this.bots[i].Place(handler);
         }
     }
     
     TiledMap.prototype.SetupBrainBots = function () {
-        var bot_brain = BotModule.CreateBrain("follower");
+        var bot_brain = BotModule.CreateBrain();
         for (var i = 0; i < this.bots.length; ++i)
             this.bots[i].PlugBrain(bot_brain);
     }
     
     TiledMap.prototype.CreatePortals = function () {
         // Create portals
-        for (var i=0; i<this.init_positions.portal.length; ++i){
-            var portal = PortalModule.CreatePortal('portal');
+        for (var i=0; i<this.init_info.portal.length; ++i){
+            var portal = PortalModule.CreatePortal('portal', this.init_info.portal[0]);
             this.portals.push(portal);
         }        
     }
@@ -104,10 +108,7 @@ var MapModule = (function () {
         // NOTE: the information regarding the destination and the source of the portals
         // was hardcoded in the custom properties of the object in the Tiled Map
         for (var i=0; i<this.portals.length; ++i){
-            this.portals[i].init_pos = this.init_positions.portal[i];
-            this.portals[i].Place(handler, this.portals[i].init_pos.x, this.portals[i].init_pos.y,
-                            this.portals[i].init_pos.properties.portal_src,
-                            this.portals[i].init_pos.properties.portal_dst);
+            this.portals[i].Place(handler);
         }
     }
     

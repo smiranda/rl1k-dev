@@ -160,6 +160,10 @@
                  "y":189
                 }],
          "opacity":1,
+         "properties":
+            {
+             "ai_type":"persistent_follower"
+            },
          "type":"objectgroup",
          "visible":true,
          "width":50,

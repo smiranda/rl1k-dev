@@ -67,8 +67,8 @@ var EngineModule = (function () {
         
         // Setup the bots in the map
         engine.maps[engine.curr_map].CreateBots();    
-        engine.maps[engine.curr_map].PlaceBots(phaserh.game);  
-        engine.maps[engine.curr_map].SetupBrainBots(); 
+        engine.maps[engine.curr_map].PlaceBots(phaserh.game);
+        engine.maps[engine.curr_map].SetupBrainBots();         
         
         // Setup player
         engine.player = PlayerModule.CreatePlayer('player');
