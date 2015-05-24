@@ -7,6 +7,7 @@ var UIModule = (function () {
     var UIModule = function(lib_ref, engine_ref){
         this.lib_ref = lib_ref;
         this.engine_ref = engine_ref;
+        this.toggle_ui_bit = true;
     };
     
     UIModule.prototype.Create = function(){
@@ -17,6 +18,26 @@ var UIModule = (function () {
         this.sprite.y = this.lib_ref.game.canvas.height - this.sprite.height;
         this.sprite.alpha = 0.8;
         this.sprite.fixedToCamera = true;
+        
+        // Toggle visibility callback registration
+        ui_context = this;
+        this.engine_ref.RegisterUpdateCallback(ui_context, function(){
+            if (ui_context.engine_ref.cursor_keys.toggle_ui.isDown){
+                if (ui_context.toggle_ui_bit){
+                    ui_context.ToggleVisible();
+                    ui_context.toggle_ui_bit=false;
+                }
+            }else if (ui_context.engine_ref.cursor_keys.toggle_ui.isUp){
+                ui_context.toggle_ui_bit = true;
+            }
+        });
+    }
+    
+    UIModule.prototype.ToggleVisible = function(visible) {
+        if (visible !== undefined)
+            this.sprite.visible = visible;
+        else
+            this.sprite.visible = !this.sprite.visible;
     }
 
     // Public interface

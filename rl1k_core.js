@@ -15,12 +15,21 @@ var EngineModule = (function () {
     // Private State
     var engine;
     var cursors; // XXX: move
+    var update_callbacks;
     
     // Module Classes
     function Engine() {
+        update_callbacks = [];
         engine = {};
-    }
     
+        engine.RegisterUpdateCallback = function (call_context, callback) {
+            update_callbacks.push({
+                'call_context': call_context,
+                'callback': callback
+            });
+        }
+    }
+         
     // Engine Class Functions
     Engine.prototype.Preload = function () {
         var phaserh = this;
@@ -82,7 +91,8 @@ var EngineModule = (function () {
             up: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.W),
             down: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.S),
             left: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.A),
-            right: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.D)
+            right: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.D),
+            toggle_ui: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.TAB)
         };
         // Plug player's brain
         var player_brain = PlayerModule.CreatePlayerBrain(engine.cursor_keys);
@@ -131,9 +141,13 @@ var EngineModule = (function () {
     Engine.prototype.Update = function () {      
         var phaserh = this;
         var wall_layer = engine.maps[engine.curr_map].layers.wall;
-        
-        
         engine.health.text = "Health: " + engine.player.health;
+        
+        for (var i=0; i<update_callbacks.length;++i)
+            update_callbacks[i].callback.apply(update_callbacks[i].call_context);
+        
+        // TODO: Put the light logic in a callback and register it via RegisterCallback
+        // 
         
         // fill the entire light bitmap with a dark shadow color.
         phaserh.bitmap.context.fillStyle = 'rgb(100, 100, 100)';
@@ -180,23 +194,6 @@ var EngineModule = (function () {
              update: this.Update,
              render: this.Render});
     };
-    
-    //var PointerAction = function (that) {
-    //    return function(pointer) {
-    //        for (var i = 0; i < that.bots.length; i++)
-    //        {
-    //            var obj0 = that.bots[i];
-    //            var obj1 = that.player;
-    //            var dx = (obj1.body.x) - (obj0.body.x);
-    //            var dy = (obj1.body.y) - (obj0.body.y);
-//
-    //            if (Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) < 200) {
-    //                obj0.AddVelocityY(-200);    
-    //                obj0.external_move = true;
-    //            }
-    //        }
-    //    };
-    //};
     
     var BlockHit = function(body1, body2) {
         body1.bot.health -= 10;
