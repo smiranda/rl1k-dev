@@ -60,11 +60,13 @@ var EngineModule = (function () {
         engine.maps_group    = phaserh.game.add.group(engine.draw_group);
         engine.bots_group    = phaserh.game.add.group(engine.draw_group);
         engine.players_group = phaserh.game.add.group(engine.draw_group);
+        engine.markers_group = phaserh.game.add.group(engine.draw_group);
         
         phaserh.game.draw_group     = engine.draw_group;
         phaserh.game.bots_group     = engine.bots_group;
         phaserh.game.maps_group     = engine.maps_group;
         phaserh.game.players_group  = engine.players_group;
+        phaserh.game.markers_group  = engine.markers_group;
         
         // Setup world
         //this.game.add.tileSprite(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y, 'background'); 
@@ -76,8 +78,8 @@ var EngineModule = (function () {
         
         // Setup the bots in the map
         engine.maps[engine.curr_map].CreateBots();    
-        engine.maps[engine.curr_map].PlaceBots(phaserh.game);  
-        engine.maps[engine.curr_map].SetupBrainBots(); 
+        engine.maps[engine.curr_map].PlaceBots(phaserh.game);
+        engine.maps[engine.curr_map].SetupBrainBots();         
         
         // Setup player
         engine.player = PlayerModule.CreatePlayer('player');
@@ -130,11 +132,13 @@ var EngineModule = (function () {
         var lightBitmap = phaserh.game.add.image(0, 0, phaserh.bitmap);
         lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
         
+        // Health bar
         engine.health = phaserh.game.add.text(100, 128, 
             "Health: " + engine.player.health, 
         { font: '16px monospace', fill: '#fff', align: 'center' }
         );
         engine.health.anchor.setTo(0.5, 0.5);
+        engine.health.fixedToCamera = true;
     };
     
     
@@ -154,10 +158,10 @@ var EngineModule = (function () {
         phaserh.bitmap.context.fillRect(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
 
         for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
-            engine.maps[engine.curr_map].bots[i].Update();
+            engine.maps[engine.curr_map].bots[i].Update(engine.player);
 
         engine.player.Update();
-        if (engine.player.body.velocity.x != 0 || engine.player.body.velocity.y != 0 || engine.player.view_points.length == 0)
+        if (engine.player.body.data.previousPosition != engine.player.body.data.position || engine.player.view_points.length == 0)
         {
             engine.player.updateVision(wall_layer);
         }

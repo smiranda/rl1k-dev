@@ -63,7 +63,7 @@ Brain.prototype.Think = function(subject)
         subject.AddVelocityX(-50);
     else if(subject.dir === 1)
         subject.AddVelocityX(50);
-    else if(subject.dir === 2)
+else if(subject.dir === 2)
         subject.AddVelocityY(-50);
     else if(subject.dir === 3)
         subject.AddVelocityY(50);

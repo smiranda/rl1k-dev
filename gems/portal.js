@@ -4,8 +4,15 @@
 var PortalModule = (function () {
     
     // Module classes
-    var Portal = function(_portal_id){
+    var Portal = function(_portal_id, init_info){
         this.portal_id = _portal_id;
+        
+        this.handler_ref = [];                                      // For handler storage
+        this.source_level = init_info.properties.portal_src;        // Source Level (loaded from .json)
+        this.destination_level = init_info.properties.portal_dst;   // Destination Level (loaded from .json)
+        this.init_pos = [];                                         // Initial coordinates (loaded from .json)
+        this.init_pos.x = init_info.x;
+        this.init_pos.y = init_info.y;
     };
 
     Portal.prototype.AddListener = function(lib_ref, engine_ref, player)
@@ -37,16 +44,19 @@ var PortalModule = (function () {
         }, this);
     };
     
-    Portal.prototype.Place = function(handler, _x, _y, source, destination)
+    Portal.prototype.Place = function(handler, _x, _y)
     {
         // Capure handler
         this.handler_ref = handler; 
-
-        this.source_level = source;
-        this.destination_level = destination;
         
         // Add the sprite object
-        this.sprite = handler.add.sprite(_x, _y, this.portal_id);
+        // If no new coordinates are provided, the portal is placed according to its original position (loaded from the .json)
+        if (_x == undefined || _y == undefined){
+            console.log(this.portal_id)
+            this.sprite = handler.markers_group.create(this.init_pos.x, this.init_pos.y, this.portal_id);
+        } else {
+            this.sprite = handler.markers_group.create(_x, _y, this.portal_id);
+        }
         handler.physics.p2.enable(this.sprite);
         this.sprite.body.setZeroDamping();
         this.sprite.body.static = true;
@@ -62,8 +72,8 @@ var PortalModule = (function () {
     return {
         
         // Portal class factory
-        CreatePortal: function(_portal_id){
-            return new Portal(_portal_id);
+        CreatePortal: function(_portal_id, _init_info){
+            return new Portal(_portal_id, _init_info);
         }
     };
 })();

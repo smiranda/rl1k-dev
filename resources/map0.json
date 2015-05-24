@@ -45,7 +45,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "ai_type":"nonpersistent_follower"
                     },
                  "rotation":0,
                  "type":"",
@@ -60,7 +60,7 @@
                  "name":"",
                  "properties":
                     {
-
+                     "ai_type":"persistent_follower"
                     },
                  "rotation":0,
                  "type":"",
@@ -75,7 +75,8 @@
                  "name":"",
                  "properties":
                     {
-
+                     "ai_type":"brownian",
+                     "dummy":"0"
                     },
                  "rotation":0,
                  "type":"",
@@ -103,6 +104,7 @@
                  "name":"",
                  "properties":
                     {
+                     "dummy":"0",
                      "portal_dst":"1",
                      "portal_src":"0"
                     },
