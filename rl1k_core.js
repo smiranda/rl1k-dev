@@ -120,11 +120,13 @@ var EngineModule = (function () {
         var lightBitmap = phaserh.game.add.image(0, 0, phaserh.bitmap);
         lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
         
+        // Health bar
         engine.health = phaserh.game.add.text(100, 128, 
             "Health: " + engine.player.health, 
         { font: '16px monospace', fill: '#fff', align: 'center' }
         );
         engine.health.anchor.setTo(0.5, 0.5);
+        engine.health.fixedToCamera = true;
     };
     
     
