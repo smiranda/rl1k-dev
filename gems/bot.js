@@ -15,6 +15,7 @@ var BotModule = (function () {
     };
     
     Bot.inheritsFrom(Character);
+    
     Bot.prototype.Place = function(handler, _x, _y)
     {
         // Capure handler
@@ -32,7 +33,18 @@ var BotModule = (function () {
         this.body.bot = this;
     };
     
-
+    Bot.prototype.Update = function(target)
+    {
+       if (this.brain !== undefined){
+           if (this.brain.type == "brownian"){
+               this.brain.Think(this);
+           }
+           else if (this.brain.type == "follower"){
+               this.brain.ThinkFollower(this, target);               
+           }
+       }
+    };
+    
     Bot.prototype.getHit = function(body)
     {
       body.bot.health -= 10;
@@ -42,31 +54,33 @@ var BotModule = (function () {
     }
     
     // Brain Class
-    var BotBrain = function(){
+    var BotBrain = function(type){
+        this.type = type;
     };
     BotBrain.inheritsFrom(Brain);
     
-    BotBrain.prototype.Update = function(player)
-    {
-       if (this.brain !== undefined)
-           this.brain.Think(this, player);
-    };
-    
-    BotBrain.prototype.ThinkFollower = function(subject)
-    {
+    BotBrain.prototype.ThinkFollower = function(subject, target)
+    {   
         // Source: http://gamemechanicexplorer.com/#follow-1
-        var distance = this.game.math.distance(this.x, this.y, this.target.x, this.target.y);
+        var RADIUS_INFLUENCE = 100.0;
+        var MAX_SPEED = 200;
+        
+        
+        var diff_x = subject.body.x - target.body.x;
+        var diff_y = subject.body.y - target.body.y;
+        var distance = Math.sqrt(Math.pow(diff_x,2) + Math.pow(diff_y,2))
 
-        // If the distance > MIN_DISTANCE then move
-        if (distance > this.MIN_DISTANCE) {
+        // If the distance < RADIUS_INFLUENCE then move
+        if (distance < RADIUS_INFLUENCE) {
             // Calculate the angle to the target
-            var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
+            var rotation = Math.atan(diff_x/diff_y);
 
             // Calculate velocity vector based on rotation and this.MAX_SPEED
-            this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
-            this.body.velocity.y = Math.sin(rotation) * this.MAX_SPEED;
+            subject.body.velocity.x = Math.cos(rotation) * MAX_SPEED;
+            subject.body.velocity.y = Math.sin(rotation) * MAX_SPEED;
         } else {
-            this.body.velocity.setTo(0, 0);
+            subject.body.velocity.x = 0;
+            subject.body.velocity.y = 0;
         }
     };
     
@@ -79,8 +93,8 @@ var BotModule = (function () {
         },
         
         // Brain class factory
-        CreateBrain: function(){
-            return new Brain();
+        CreateBrain: function(_type){
+            return new BotBrain(_type);
         },
     };  
 })();

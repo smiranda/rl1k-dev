@@ -87,7 +87,7 @@ var MapModule = (function () {
     }
     
     TiledMap.prototype.SetupBrainBots = function () {
-        var bot_brain = BotModule.CreateBrain();
+        var bot_brain = BotModule.CreateBrain("follower");
         for (var i = 0; i < this.bots.length; ++i)
             this.bots[i].PlugBrain(bot_brain);
     }
