@@ -46,6 +46,29 @@ var BotModule = (function () {
     };
     BotBrain.inheritsFrom(Brain);
     
+    BotBrain.prototype.Update = function(player)
+    {
+       if (this.brain !== undefined)
+           this.brain.Think(this, player);
+    };
+    
+    BotBrain.prototype.ThinkFollower = function(subject)
+    {
+        // Source: http://gamemechanicexplorer.com/#follow-1
+        var distance = this.game.math.distance(this.x, this.y, this.target.x, this.target.y);
+
+        // If the distance > MIN_DISTANCE then move
+        if (distance > this.MIN_DISTANCE) {
+            // Calculate the angle to the target
+            var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
+
+            // Calculate velocity vector based on rotation and this.MAX_SPEED
+            this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
+            this.body.velocity.y = Math.sin(rotation) * this.MAX_SPEED;
+        } else {
+            this.body.velocity.setTo(0, 0);
+        }
+    };
     
     // Public interface
     return {

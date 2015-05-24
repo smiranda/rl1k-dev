@@ -140,7 +140,7 @@ var EngineModule = (function () {
         phaserh.bitmap.context.fillRect(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
 
         for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
-            engine.maps[engine.curr_map].bots[i].Update();
+            engine.maps[engine.curr_map].bots[i].Update(engine.player);
 
         engine.player.Update();
         if (engine.player.body.velocity.x != 0 || engine.player.body.velocity.y != 0 || engine.player.view_points.length == 0)

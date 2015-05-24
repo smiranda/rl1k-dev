@@ -17,7 +17,7 @@ var Character = function(_sprite_sheet_id)
     this.view_points = [];
 };
 
-Character.prototype.Update = function()
+Character.prototype.Update = function(player)
 {
    if (this.brain !== undefined)
        this.brain.Think(this);
