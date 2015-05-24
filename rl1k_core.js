@@ -17,9 +17,9 @@ var EngineModule = (function () {
     var cursors; // XXX: move
     
     // Module Classes
-    function Engine () {
-        engine = {}
-    };
+    function Engine() {
+        engine = {};
+    }
     
     // Engine Class Functions
     Engine.prototype.Preload = function () {
@@ -29,6 +29,7 @@ var EngineModule = (function () {
         phaserh.game.load.spritesheet('bot', './gfx/square.png', 16, 16);
         phaserh.game.load.spritesheet('portal', './gfx/portal.png', 16, 16);
         phaserh.game.load.spritesheet('ui_box', './gfx/ui_box.png', 145, 55);
+        phaserh.game.load.spritesheet('player', './gfx/square.png', 16, 16);
         
         engine.maps = new Array();
         for (var i=0; i<2; ++i) {
@@ -46,13 +47,15 @@ var EngineModule = (function () {
         // Setup physics
         phaserh.game.physics.startSystem(Phaser.Physics.P2JS);
 
-        engine.draw_group = phaserh.game.add.group();
-        engine.maps_group = phaserh.game.add.group(engine.draw_group);
-        engine.bots_group = phaserh.game.add.group(engine.draw_group);
-
-        phaserh.game.draw_group = engine.draw_group;
-        phaserh.game.bots_group = engine.bots_group;
-        phaserh.game.maps_group = engine.maps_group;
+        engine.draw_group    = phaserh.game.add.group();
+        engine.maps_group    = phaserh.game.add.group(engine.draw_group);
+        engine.bots_group    = phaserh.game.add.group(engine.draw_group);
+        engine.players_group = phaserh.game.add.group(engine.draw_group);
+        
+        phaserh.game.draw_group     = engine.draw_group;
+        phaserh.game.bots_group     = engine.bots_group;
+        phaserh.game.maps_group     = engine.maps_group;
+        phaserh.game.players_group  = engine.players_group;
         
         // Setup world
         //this.game.add.tileSprite(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y, 'background'); 
@@ -61,13 +64,14 @@ var EngineModule = (function () {
         // Setup initial map
         engine.curr_map = 0
         engine.maps[engine.curr_map].Create(phaserh.game);
+        
         // Setup the bots in the map
         engine.maps[engine.curr_map].CreateBots();    
         engine.maps[engine.curr_map].PlaceBots(phaserh.game);  
         engine.maps[engine.curr_map].SetupBrainBots(); 
         
         // Setup player
-        engine.player = BotModule.CreateBot('bot');
+        engine.player = PlayerModule.CreatePlayer('player');
         // Place player in the map
         engine.player.Place(
             phaserh.game, phaserh.game.world.centerX, phaserh.game.world.centerY);
@@ -81,15 +85,13 @@ var EngineModule = (function () {
             right: phaserh.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
         // Plug player's brain
-        var player_brain = BotModule.CreatePlayerBrain(engine.cursor_keys);
+        var player_brain = PlayerModule.CreatePlayerBrain(engine.cursor_keys);
         engine.player.PlugBrain(player_brain); 
         
         // Setup the portals in the map
         engine.maps[engine.curr_map].CreatePortals(); 
         engine.maps[engine.curr_map].PlacePortals(phaserh.game); 
         engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player); // player needs to be created before activating the portals
-        
-        
         
         //this.game.input.onDown.add(PointerAction(this), this);
 
@@ -105,6 +107,7 @@ var EngineModule = (function () {
         engine.ui = UIModule.CreateUIModule(phaserh, engine);
         engine.ui.Create();
         
+        
         // Other Initializations
         phaserh.game.camera.follow(engine.player.sprite);
         phaserh.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
@@ -116,19 +119,30 @@ var EngineModule = (function () {
         phaserh.bitmap = phaserh.game.add.bitmapData(WORLD_BOUND_X, WORLD_BOUND_Y);
         var lightBitmap = phaserh.game.add.image(0, 0, phaserh.bitmap);
         lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
+        
+        engine.health = phaserh.game.add.text(100, 128, 
+            "Health: " + engine.player.health, 
+        { font: '16px monospace', fill: '#fff', align: 'center' }
+        );
+        engine.health.anchor.setTo(0.5, 0.5);
     };
+    
+    
     Engine.prototype.Update = function () {      
         var phaserh = this;
         var wall_layer = engine.maps[engine.curr_map].layers.wall;
-
+        
+        
+        engine.health.text = "Health: " + engine.player.health;
+        
         // fill the entire light bitmap with a dark shadow color.
         phaserh.bitmap.context.fillStyle = 'rgb(100, 100, 100)';
         phaserh.bitmap.context.fillRect(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
 
-        engine.player.Update();
         for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
             engine.maps[engine.curr_map].bots[i].Update();
 
+        engine.player.Update();
         if (engine.player.body.velocity.x != 0 || engine.player.body.velocity.y != 0 || engine.player.view_points.length == 0)
         {
             engine.player.updateVision(wall_layer);
@@ -145,16 +159,19 @@ var EngineModule = (function () {
         phaserh.bitmap.context.fill();
         phaserh.bitmap.dirty = true;
     };
+    
+    
     Engine.prototype.Render = function () {
         var phaserh = this;
         
-        engine.ui
-        
         //this.game.debug.cameraInfo(this.game.camera, 32, 32);
-        phaserh.game.debug.text("Health: " + engine.player.health, 32, 128);
         //this.game.debug.spriteCoords(this.player.sprite, 32, 160);
         phaserh.game.scale.refresh();
     };
+    
+    
+    // NOTE: Phaser.Auto detects the presence of WebGL immediately. However, using WebGL
+    // may make the game slow and laggy.
     Engine.prototype.Init = function (win_w, win_h, dom_tag) {
         this.game = new Phaser.Game(
             win_w, win_h, Phaser.CANVAS, dom_tag,
