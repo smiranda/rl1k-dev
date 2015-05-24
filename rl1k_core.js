@@ -17,9 +17,9 @@ var EngineModule = (function () {
     var cursors; // XXX: move
     
     // Module Classes
-    function Engine () {
-        engine = {}
-    };
+    function Engine() {
+        engine = {};
+    }
     
     // Engine Class Functions
     Engine.prototype.Preload = function () {
@@ -92,8 +92,6 @@ var EngineModule = (function () {
         engine.maps[engine.curr_map].PlacePortals(phaserh.game); 
         engine.maps[engine.curr_map].ActivatePortals(phaserh, engine, engine.player); // player needs to be created before activating the portals
         
-        
-        
         //this.game.input.onDown.add(PointerAction(this), this);
 
         //Check for the bot hitting another object           
@@ -130,6 +128,7 @@ var EngineModule = (function () {
         phaserh.bitmap.context.fillStyle = 'rgb(100, 100, 100)';
         phaserh.bitmap.context.fillRect(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
 
+        
         engine.player.Update();
         for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
             engine.maps[engine.curr_map].bots[i].Update();

@@ -23,7 +23,10 @@ var PortalModule = (function () {
             dst_map.ActivatePortals(lib_ref, engine_ref, player);
 
             engine_ref.curr_map = this.destination_level;
-
+            
+            // One-shot immediate vision update
+            engine_ref.player.updateVision(dst_map.layers.wall);
+            
             // Check for the bot hitting another object  
             for (var i=0; i<engine_ref.maps[engine_ref.curr_map].bots.length; ++i)
                 engine_ref.player.body.createBodyCallback(dst_map.bots[i], player.getHit, lib_ref);
