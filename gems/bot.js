@@ -64,7 +64,7 @@ var BotModule = (function () {
         // Source: http://gamemechanicexplorer.com/#follow-1
         var RADIUS_INFLUENCE = 100.0;
         var MAX_SPEED = 200;
-        
+        var lib_ref = subject.body.game;
         
         var diff_x = subject.body.x - target.body.x;
         var diff_y = subject.body.y - target.body.y;
@@ -73,7 +73,7 @@ var BotModule = (function () {
         // If the distance < RADIUS_INFLUENCE then move
         if (distance < RADIUS_INFLUENCE) {
             // Calculate the angle to the target
-            var rotation = Math.atan(diff_x/diff_y);
+            var rotation = lib_ref.math.angleBetween(subject.body.x, subject.body.y, target.body.x, target.body.y);
 
             // Calculate velocity vector based on rotation and this.MAX_SPEED
             subject.body.velocity.x = Math.cos(rotation) * MAX_SPEED;
