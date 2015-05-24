@@ -127,10 +127,8 @@ var EngineModule = (function () {
         phaserh.game.scale.pageAlignVeritcally = true;
         phaserh.game.scale.refresh();
 
-        // light bitmap
-        phaserh.bitmap = phaserh.game.add.bitmapData(WORLD_BOUND_X, WORLD_BOUND_Y);
-        var lightBitmap = phaserh.game.add.image(0, 0, phaserh.bitmap);
-        lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
+        engine.overlay_light = LightModule.CreateOverlayLight(phaserh, engine);
+        engine.overlay_light.Place(0,0, WORLD_BOUND_X, WORLD_BOUND_Y);
         
         // Health bar
         engine.health = phaserh.game.add.text(100, 128, 
@@ -146,36 +144,16 @@ var EngineModule = (function () {
         var phaserh = this;
         var wall_layer = engine.maps[engine.curr_map].layers.wall;
         engine.health.text = "Health: " + engine.player.health;
-        
-        for (var i=0; i<update_callbacks.length;++i)
-            update_callbacks[i].callback.apply(update_callbacks[i].call_context);
-        
-        // TODO: Put the light logic in a callback and register it via RegisterCallback
-        // 
-        
-        // fill the entire light bitmap with a dark shadow color.
-        phaserh.bitmap.context.fillStyle = 'rgb(100, 100, 100)';
-        phaserh.bitmap.context.fillRect(0, 0, WORLD_BOUND_X, WORLD_BOUND_Y);
-
+    
         for (var i=0; i<engine.maps[engine.curr_map].bots.length; ++i)
             engine.maps[engine.curr_map].bots[i].Update(engine.player);
 
         engine.player.Update();
         if (engine.player.body.data.previousPosition != engine.player.body.data.position || engine.player.view_points.length == 0)
-        {
             engine.player.updateVision(wall_layer);
-        }
-
-        // draw light around player
-        phaserh.bitmap.context.beginPath();
-        phaserh.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-        phaserh.bitmap.context.moveTo(engine.player.view_points[0].x, engine.player.view_points[0].y);
-        for(var i = 0; i < engine.player.view_points.length; i++) {
-            phaserh.bitmap.context.lineTo(engine.player.view_points[i].x, engine.player.view_points[i].y);
-        }
-        phaserh.bitmap.context.closePath();
-        phaserh.bitmap.context.fill();
-        phaserh.bitmap.dirty = true;
+        
+        for (var i=0; i<update_callbacks.length;++i)
+            update_callbacks[i].callback.apply(update_callbacks[i].call_context);
     };
     
     
