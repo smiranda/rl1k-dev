@@ -63,7 +63,7 @@ var BotModule = (function () {
     {   
         // Source: http://gamemechanicexplorer.com/#follow-1
         var RADIUS_INFLUENCE = 100.0;
-        var MAX_SPEED = 200;
+        var MAX_SPEED = 100;
         var lib_ref = subject.body.game;
         
         var diff_x = subject.body.x - target.body.x;
@@ -79,8 +79,7 @@ var BotModule = (function () {
             subject.body.velocity.x = Math.cos(rotation) * MAX_SPEED;
             subject.body.velocity.y = Math.sin(rotation) * MAX_SPEED;
         } else {
-            subject.body.velocity.x = 0;
-            subject.body.velocity.y = 0;
+            subject.body.setZeroVelocity();
         }
     };
     

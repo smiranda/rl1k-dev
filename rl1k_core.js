@@ -145,7 +145,7 @@ var EngineModule = (function () {
             engine.maps[engine.curr_map].bots[i].Update(engine.player);
 
         engine.player.Update();
-        if (engine.player.body.velocity.x != 0 || engine.player.body.velocity.y != 0 || engine.player.view_points.length == 0)
+        if (engine.player.body.data.previousPosition != engine.player.body.data.position || engine.player.view_points.length == 0)
         {
             engine.player.updateVision(wall_layer);
         }
