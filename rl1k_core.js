@@ -36,6 +36,7 @@ var EngineModule = (function () {
         
         phaserh.game.load.image('background', './gfx/space.png');
         phaserh.game.load.spritesheet('bot', './gfx/square.png', 16, 16);
+        phaserh.game.load.spritesheet('yellow_gem', './gfx/gems.png', 16, 40, 18);
         phaserh.game.load.spritesheet('portal', './gfx/portal.png', 16, 16);
         phaserh.game.load.spritesheet('ui_box', './gfx/ui_box.png', 145, 55);
         phaserh.game.load.spritesheet('player', './gfx/square.png', 16, 16);
@@ -137,6 +138,10 @@ var EngineModule = (function () {
         );
         engine.health.anchor.setTo(0.5, 0.5);
         engine.health.fixedToCamera = true;
+        
+        // Gem
+        engine.test_gem = new Gem(phaserh, engine);
+        engine.test_gem.Place(280, 100, phaserh.game.add.group(engine.draw_group));
     };
     
     
