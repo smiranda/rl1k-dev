@@ -59,13 +59,15 @@ var EngineModule = (function () {
 
         engine.draw_group    = phaserh.game.add.group();
         engine.maps_group    = phaserh.game.add.group(engine.draw_group);
+        engine.loot_group    = phaserh.game.add.group(engine.draw_group);
         engine.bots_group    = phaserh.game.add.group(engine.draw_group);
         engine.players_group = phaserh.game.add.group(engine.draw_group);
         engine.markers_group = phaserh.game.add.group(engine.draw_group);
         
         phaserh.game.draw_group     = engine.draw_group;
-        phaserh.game.bots_group     = engine.bots_group;
         phaserh.game.maps_group     = engine.maps_group;
+        phaserh.game.loot_group     = engine.loot_group;
+        phaserh.game.bots_group     = engine.bots_group;
         phaserh.game.players_group  = engine.players_group;
         phaserh.game.markers_group  = engine.markers_group;
         
@@ -76,6 +78,10 @@ var EngineModule = (function () {
         // Setup initial map
         engine.curr_map = 0
         engine.maps[engine.curr_map].Create(phaserh.game);
+        
+        // Setup loot in the map
+        engine.maps[engine.curr_map].CreateLoot(engine);
+        engine.maps[engine.curr_map].PlaceLoot(phaserh.game);
         
         // Setup the bots in the map
         engine.maps[engine.curr_map].CreateBots();    
@@ -138,10 +144,6 @@ var EngineModule = (function () {
         );
         engine.health.anchor.setTo(0.5, 0.5);
         engine.health.fixedToCamera = true;
-        
-        // Gem
-        engine.test_gem = new Gem(phaserh, engine);
-        engine.test_gem.Place(280, 100, phaserh.game.add.group(engine.draw_group));
     };
     
     

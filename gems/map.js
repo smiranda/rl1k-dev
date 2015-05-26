@@ -13,7 +13,8 @@ var MapModule = (function () {
         this.layers = [];                       // Tile layers (background, walls,...) loaded from .json
         this.init_info = [];                    // Set of properties loaded from .json
         
-        this.bots = new Array();                // Stores the Bot objects
+        this.loot    = new Array();             // Stores the Loot objects
+        this.bots    = new Array();             // Stores the Bot objects
         this.portals = new Array();             // Stores the Portal objects
         
     };
@@ -39,6 +40,9 @@ var MapModule = (function () {
         // Setup Collidable wall layer
         map.setCollisionBetween(256, 267, true, layers.wall);// colidable tiles
         handler.physics.p2.convertTilemap(map, layers.wall);// this returns the array of bodies, if required
+
+        // Extract loot objects' positions from Object Layer in the Tiled Map
+        var loot_bodies = map.objects.loot;
         
         // Extract bots' positions from Object Layer in the Tiled Map
         var bot_bodies = map.objects.bots;
@@ -49,11 +53,18 @@ var MapModule = (function () {
         // Store information in the object
         this.layers = layers;
         this.map = map;
+        this.init_info.loot = loot_bodies;
         this.init_info.bot = bot_bodies;
         this.init_info.portal = portal_bodies;
     };
     
     TiledMap.prototype.Destroy = function () {
+        
+        // Destroy loot
+        for (var i=0; i<this.loot.length; ++i){
+            this.loot[i].sprite.destroy();
+        }
+        this.loot = [];        
         
         // Destroy bots
         for (var i=0; i<this.bots.length; ++i){
@@ -77,6 +88,17 @@ var MapModule = (function () {
         for (var layerToDestroy in this.layers)
             this.layers[layerToDestroy].destroy();
     };
+    
+    TiledMap.prototype.CreateLoot = function (engine_ref) {
+        for (var i=0; i<this.init_info.loot.length; ++i)
+            this.loot.push(LootModule.CreateLoot(this.init_info.loot[i], engine_ref));
+    }
+    
+    TiledMap.prototype.PlaceLoot = function (handler) {
+        for (var i = 0; i < this.loot.length; ++i){
+            this.loot[i].PlaceAndAnimate(handler);
+        }
+    }
     
     
     TiledMap.prototype.CreateBots = function () {

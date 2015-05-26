@@ -45,7 +45,8 @@
                  "name":"",
                  "properties":
                     {
-                     "ai_type":"nonpersistent_follower"
+                     "ai_type":"nonpersistent_follower",
+                     "sprite_id":"bot"
                     },
                  "rotation":0,
                  "type":"",
@@ -60,7 +61,8 @@
                  "name":"",
                  "properties":
                     {
-                     "ai_type":"persistent_follower"
+                     "ai_type":"persistent_follower",
+                     "sprite_id":"bot"
                     },
                  "rotation":0,
                  "type":"",
@@ -76,7 +78,8 @@
                  "properties":
                     {
                      "ai_type":"brownian",
-                     "dummy":"0"
+                     "dummy":"0",
+                     "sprite_id":"bot"
                     },
                  "rotation":0,
                  "type":"",
@@ -121,8 +124,68 @@
          "width":50,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":50,
+         "name":"loot",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":18,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite_id":"yellow_gem"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":452,
+                 "y":105
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":19,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite_id":"yellow_gem"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":273,
+                 "y":62
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":20,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite_id":"yellow_gem"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":645,
+                 "y":54
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":50,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":16,
+ "nextobjectid":21,
  "orientation":"orthogonal",
  "properties":
     {

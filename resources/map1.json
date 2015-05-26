@@ -198,8 +198,68 @@
          "width":50,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":50,
+         "name":"loot",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":11,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite_id":"yellow_gem"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":357,
+                 "y":270
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":12,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite_id":"yellow_gem"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":313,
+                 "y":377
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":13,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite_id":"yellow_gem"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":420,
+                 "y":414
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":50,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":11,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "properties":
     {
