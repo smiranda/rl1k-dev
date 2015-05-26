@@ -4,11 +4,10 @@
 var BotModule = (function () {
     
     // Bot Class
-    var Bot = function(_sprite_sheet_id, init_info)
+    var Bot = function(init_info)
     {
         // General Properties
         this.health = 100;
-        this.sprite_sheet_id = _sprite_sheet_id;
         this.dir = 0;
         this.external_move = false;
         this.viewing_range = 100;
@@ -16,6 +15,7 @@ var BotModule = (function () {
         this.wasActive = 0;                             // true if bot was active before
         
         // Properties loaded from the json
+        this.sprite_sheet_id = init_info.properties.sprite_id;
         this.init_pos = [];
         this.init_pos.x = init_info.x;                  // initial coordinate x loaded from .json
         this.init_pos.y = init_info.y;                  // initial coordinate y loaded from .json
@@ -119,8 +119,8 @@ var BotModule = (function () {
     return {
         
         // Bot class factory
-        CreateBot: function(_sprite_sheet_id, init_info){
-            return new Bot(_sprite_sheet_id, init_info);
+        CreateBot: function(init_info){
+            return new Bot(init_info);
         },
         
         // Brain class factory

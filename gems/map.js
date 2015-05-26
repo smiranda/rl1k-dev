@@ -103,7 +103,7 @@ var MapModule = (function () {
     
     TiledMap.prototype.CreateBots = function () {
         for (var i=0; i<this.init_info.bot.length; ++i)
-            this.bots.push(BotModule.CreateBot('bot', this.init_info.bot[i]));
+            this.bots.push(BotModule.CreateBot(this.init_info.bot[i]));
     }
     
     TiledMap.prototype.PlaceBots = function (handler) {
