@@ -22,6 +22,8 @@ var PortalModule = (function () {
         this.body.createBodyCallback(player, function(body1, body2) {
             src_map.Destroy(lib_ref.game);
             dst_map.Create(lib_ref.game);
+            dst_map.CreateLoot(engine_ref);
+            dst_map.PlaceLoot(lib_ref.game);
             dst_map.CreateBots();    
             dst_map.PlaceBots(lib_ref.game);  
             dst_map.SetupBrainBots(); 

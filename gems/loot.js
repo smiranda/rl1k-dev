@@ -28,7 +28,7 @@ var LootModule = (function () {
         }
 
         // Callback such that it disappears upon contact with the player
-        loot = this;
+        var loot = this;
         this.engine_ref.RegisterUpdateCallback(loot, function(){
             if (Phaser.Rectangle.intersects (
                 loot.sprite.getBounds(),
