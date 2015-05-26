@@ -183,7 +183,8 @@
                  "properties":
                     {
                      "portal_dst":"0",
-                     "portal_src":"1"
+                     "portal_src":"1",
+                     "sprite_id":"portal"
                     },
                  "rotation":0,
                  "type":"",

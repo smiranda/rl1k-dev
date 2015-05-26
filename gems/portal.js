@@ -4,10 +4,11 @@
 var PortalModule = (function () {
     
     // Module classes
-    var Portal = function(_portal_id, init_info){
-        this.portal_id = _portal_id;
-        
+    var Portal = function(init_info){        
         this.handler_ref = [];                                      // For handler storage
+        
+        // Properties loaded from the .json
+        this.portal_id = init_info.properties.sprite_id;
         this.source_level = init_info.properties.portal_src;        // Source Level (loaded from .json)
         this.destination_level = init_info.properties.portal_dst;   // Destination Level (loaded from .json)
         this.init_pos = [];                                         // Initial coordinates (loaded from .json)

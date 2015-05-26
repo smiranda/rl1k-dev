@@ -109,7 +109,8 @@
                     {
                      "dummy":"0",
                      "portal_dst":"1",
-                     "portal_src":"0"
+                     "portal_src":"0",
+                     "sprite_id":"portal"
                     },
                  "rotation":0,
                  "type":"",

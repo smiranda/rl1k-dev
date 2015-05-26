@@ -121,7 +121,7 @@ var MapModule = (function () {
     TiledMap.prototype.CreatePortals = function () {
         // Create portals
         for (var i=0; i<this.init_info.portal.length; ++i){
-            var portal = PortalModule.CreatePortal('portal', this.init_info.portal[0]);
+            var portal = PortalModule.CreatePortal(this.init_info.portal[0]);
             this.portals.push(portal);
         }        
     }
