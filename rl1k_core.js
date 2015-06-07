@@ -39,7 +39,8 @@ var EngineModule = (function () {
         phaserh.game.load.spritesheet('yellow_gem', './gfx/gems.png', 16, 40, 18);
         phaserh.game.load.spritesheet('portal', './gfx/portal.png', 16, 16);
         phaserh.game.load.spritesheet('ui_box', './gfx/ui_box.png', 145, 55);
-        phaserh.game.load.spritesheet('player', './gfx/square.png', 16, 16);
+        //also try './gfx/monk_full.png', 16, 18, 36 wizard_front.png, 15, 18, 1 (no animations)
+        phaserh.game.load.spritesheet('player', './gfx/monk_full_shadow.png', 16, 20, 36);        
         
         engine.maps = new Array();
         for (var i=0; i<2; ++i) {
@@ -47,6 +48,9 @@ var EngineModule = (function () {
             engine.maps[i].Preload(
                 phaserh.game,'./resources/map'+i+'.json','./gfx/world.png');
         }
+        
+        // for better pixel art scaling
+        phaserh.game.stage.smoothed=false;
         
     };
     

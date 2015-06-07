@@ -21,10 +21,14 @@ var PlayerModule = (function () {
         this.handler_ref = handler; 
         
         // Add the sprite object
-        this.sprite = handler.players_group.create(_x, _y, 'player');
+        this.sprite = handler.add.sprite(_x, _y, 'player', 19);
+        handler.players_group.add(this.sprite);
+        this.sprite.scale.set(2, 2);
+        // Adding anumations
+        this.sprite.animations.add('walk_down', [18, 20], 3, false);
         handler.physics.p2.enable(this.sprite);
         this.sprite.body.setZeroDamping();
-        //this.sprite.body.fixedRotation = true;
+        this.sprite.body.fixedRotation = true;
         
         // add a reference-to-body to this
         this.body = this.sprite.body;
@@ -80,17 +84,6 @@ var PlayerModule = (function () {
     {
         subject.body.setZeroVelocity();
         
-        var delta_mouse_rad = subject.body.rotation - subject.handler_ref.physics.arcade.angleToPointer(subject.sprite) - Math.PI/2;  
-        delta_mouse_rad = delta_mouse_rad - Math.PI/2;
-        var mod = Math.PI * 2;
-        delta_mouse_rad = delta_mouse_rad % mod; // saturate value to [-Math.PI*2,Math.PI*2]
-
-        if (delta_mouse_rad !== delta_mouse_rad % (mod/2) ) { 
-          delta_mouse_rad = (delta_mouse_rad < 0) ? delta_mouse_rad + mod : delta_mouse_rad - mod;
-        }
-        var speed = 650;
-        subject.body.rotateLeft(speed * delta_mouse_rad);
-        
         if (this.cursor_keys.left.isDown)
             subject.AddVelocityX(-200);
         else if (this.cursor_keys.right.isDown)
@@ -98,8 +91,13 @@ var PlayerModule = (function () {
 
         if (this.cursor_keys.up.isDown)
             subject.AddVelocityY(-200);
-        else if (this.cursor_keys.down.isDown)
-           subject.AddVelocityY(200);
+        else if (this.cursor_keys.down.isDown){
+            subject.sprite.animations.play('walk_down');
+            subject.AddVelocityY(200);
+        } else {
+            subject.sprite.animations.stop();  
+            subject.sprite.frame = 19;
+        }
     };
     
     // Public interface
